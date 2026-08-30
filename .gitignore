@@ -1,0 +1,12 @@
+# Local launcher state (lives in %LOCALAPPDATA%, never in the repo)
+config.json
+launcher.log
+
+# Secrets
+*.key
+
+# Editors / OS
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini

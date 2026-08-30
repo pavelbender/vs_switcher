@@ -1,0 +1,26 @@
+name: lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  parse:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Parse PowerShell scripts
+        shell: pwsh
+        run: |
+          $failed = $false
+          foreach ($file in Get-ChildItem -Filter *.ps1) {
+              $errors = $null
+              [System.Management.Automation.Language.Parser]::ParseFile($file.FullName, [ref]$null, [ref]$errors) | Out-Null
+              if ($errors) {
+                  $failed = $true
+                  $errors | ForEach-Object { Write-Host "::error file=$($file.Name)::$($_.Message)" }
+              }
+          }
+          if ($failed) { exit 1 }
+          Write-Host 'All scripts parsed successfully.'
